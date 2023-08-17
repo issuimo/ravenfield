@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="library">
+      <UniqueIdentifier>{4c891823-6351-48f1-ae35-a3c8e7bb70c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\detours">
+      <UniqueIdentifier>{5220c7fc-2e87-48ac-a59e-e0d57269958e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\fmt">
+      <UniqueIdentifier>{e202302f-9214-4fc6-a9d2-ca601344d7ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\imgui">
+      <UniqueIdentifier>{b1715c49-5f70-4f88-a7b8-381bcccd2bb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\magic_enum">
+      <UniqueIdentifier>{f2219253-f264-4073-9cbe-cee4c392a636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="library\stb">
+      <UniqueIdentifier>{ef945658-ab45-482a-91d6-4a03d2ce08f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="features">
+      <UniqueIdentifier>{b4d8e8fc-edcc-4ab4-a66c-fdc2f4e171d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="features\玩家列表">
+      <UniqueIdentifier>{79ace8ef-cf67-40e1-8e52-8cf635a0a8f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="features\载具列表">
+      <UniqueIdentifier>{3581344c-6046-4957-bb3c-3ad5b64ca5f0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui_demo.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui_draw.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui_impl_dx11.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui_impl_win32.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui_tables.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\imgui_widgets.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\implot.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\implot_demo.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui\implot_items.cpp">
+      <Filter>library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\stb\stb_vorbis.c">
+      <Filter>library\stb</Filter>
+    </ClCompile>
+    <ClCompile Include="Init.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="features\PlayerList.cpp">
+      <Filter>features\玩家列表</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="library\Font.hpp">
+      <Filter>library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\json.hpp">
+      <Filter>library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\log.h">
+      <Filter>library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\detours\detours.h">
+      <Filter>library\detours</Filter>
+    </ClInclude>
+    <ClInclude Include="library\detours\HookManager.h">
+      <Filter>library\detours</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\args.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\chrono.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\color.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\compile.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\core.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\format.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\format-inl.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\os.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\ostream.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\printf.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\ranges.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\std.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\fmt\xchar.h">
+      <Filter>library\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imconfig.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imgui.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imgui_impl_dx11.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imgui_impl_win32.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imgui_internal.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\implot.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\implot_internal.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imstb_rectpack.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imstb_textedit.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui\imstb_truetype.h">
+      <Filter>library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_all.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_containers.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_flags.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_format.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_fuse.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_iostream.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_switch.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\magic_enum\magic_enum_utility.hpp">
+      <Filter>library\magic_enum</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_c_lexer.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_connected_components.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_divide.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_ds.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_dxt.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_easy_font.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_herringbone_wang_tile.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_hexwave.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_image.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_image_resize.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_image_write.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_include.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_leakcheck.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_perlin.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_rect_pack.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_sprintf.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_textedit.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_tilemap_editor.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_truetype.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="library\stb\stb_voxel_render.h">
+      <Filter>library\stb</Filter>
+    </ClInclude>
+    <ClInclude Include="Init.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="features\PlayerList.h">
+      <Filter>features\玩家列表</Filter>
+    </ClInclude>
+    <ClInclude Include="library\d3d11hook.h">
+      <Filter>library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\UnityHack.h">
+      <Filter>library</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="library\detours\[x64]detours.lib">
+      <Filter>library\detours</Filter>
+    </Library>
+    <Library Include="library\detours\[x86]detours.lib">
+      <Filter>library\detours</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
