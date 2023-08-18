@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿
+#pragma once
 #include <Windows.h>
 #include <string>
 #include <unordered_map>
@@ -15,25 +16,25 @@ namespace unity {
             float x, y, z;
 
             Vector3() { x = y = z = 0.f; }
-            Vector3(float f1, float f2, float f3) { x = f1; y = f2; z = f3; }
 
-            float Length() const {
-                return x * x + y * y + z * z;
+            Vector3(float f1, float f2, float f3) {
+                x = f1;
+                y = f2;
+                z = f3;
             }
 
-            float Dot(Vector3 b) const {
-                return x * b.x + y * b.y + z * b.z;
-            }
+            auto Length() const -> float { return x * x + y * y + z * z; }
 
-            Vector3 Normalize() const {
+            auto Dot(Vector3 b) const -> float { return x * b.x + y * b.y + z * b.z; }
+
+            auto Normalize() const -> Vector3 {
                 const float len = Length();
                 if (len > 0)
                     return Vector3(x / len, y / len, z / len);
-                else
-                    return Vector3(x, y, z);
+                return Vector3(x, y, z);
             }
 
-            void ToVectors(Vector3* m_pForward, Vector3* m_pRight, Vector3* m_pUp) const {
+            auto ToVectors(Vector3* m_pForward, Vector3* m_pRight, Vector3* m_pUp) const -> void {
                 constexpr float m_fDeg2Rad = 3.1415926 / 180.f;
 
                 const float m_fSinX = sinf(x * m_fDeg2Rad);
@@ -45,36 +46,33 @@ namespace unity {
                 const float m_fSinZ = sinf(z * m_fDeg2Rad);
                 const float m_fCosZ = cosf(z * m_fDeg2Rad);
 
-                if (m_pForward)
-                {
+                if (m_pForward) {
                     m_pForward->x = m_fCosX * m_fCosY;
                     m_pForward->y = -m_fSinX;
                     m_pForward->z = m_fCosX * m_fSinY;
                 }
 
-                if (m_pRight)
-                {
+                if (m_pRight) {
                     m_pRight->x = -1.f * m_fSinZ * m_fSinX * m_fCosY + -1.f * m_fCosZ * -m_fSinY;
                     m_pRight->y = -1.f * m_fSinZ * m_fCosX;
                     m_pRight->z = -1.f * m_fSinZ * m_fSinX * m_fSinY + -1.f * m_fCosZ * m_fCosY;
                 }
 
-                if (m_pUp)
-                {
+                if (m_pUp) {
                     m_pUp->x = m_fCosZ * m_fSinX * m_fCosY + -m_fSinZ * -m_fSinY;
                     m_pUp->y = m_fCosZ * m_fCosX;
                     m_pUp->z = m_fCosZ * m_fSinX * m_fSinY + -m_fSinZ * m_fCosY;
                 }
             }
 
-            inline auto Distance(const Vector3& event) const -> float {
+            auto Distance(const Vector3& event) const -> float {
                 const float dx = this->x - event.x;
                 const float dy = this->y - event.y;
                 const float dz = this->z - event.z;
                 return std::sqrt(dx * dx + dy * dy + dz * dz);
             }
 
-            inline auto Distance(const std::vector<Vector3>& events) const -> std::vector<float> {
+            auto Distance(const std::vector<Vector3>& events) const -> std::vector<float> {
                 const int     numEvents     = events.size();
                 constexpr int numDimensions = 3;
                 const int     numElements   = numEvents * numDimensions;
@@ -89,11 +87,20 @@ namespace unity {
 
                 // 计算距离平方
                 std::vector<float> distances(numEvents);
-                cblas_sgemv(CblasRowMajor, CblasNoTrans, numEvents, numDimensions, -2.0f,
-                    coordinates.data(), numDimensions, &this->x, 1, 0.0f, distances.data(), 1);
-                for (auto& distance : distances) {
+                cblas_sgemv(CblasRowMajor,
+                            CblasNoTrans,
+                            numEvents,
+                            numDimensions,
+                            -2.0f,
+                            coordinates.data(),
+                            numDimensions,
+                            &this->x,
+                            1,
+                            0.0f,
+                            distances.data(),
+                            1);
+                for (auto& distance : distances)
                     distance = std::sqrt(distance);
-                }
 
                 return distances;
             }
@@ -103,15 +110,19 @@ namespace unity {
             float x, y;
 
             Vector2() { x = y = 0.f; }
-            Vector2(float f1, float f2) { x = f1; y = f2; }
 
-            inline auto Distance(const Vector2& event) const -> float {
+            Vector2(float f1, float f2) {
+                x = f1;
+                y = f2;
+            }
+
+            auto Distance(const Vector2& event) const -> float {
                 const float dx = this->x - event.x;
                 const float dy = this->y - event.y;
                 return std::sqrt(dx * dx + dy * dy);
             }
 
-            inline auto Distance(const std::vector<Vector2>& events) const -> std::vector<float> {
+            auto Distance(const std::vector<Vector2>& events) const -> std::vector<float> {
                 const int     numEvents     = events.size();
                 constexpr int numDimensions = 2;
                 const int     numElements   = numEvents * numDimensions;
@@ -125,33 +136,51 @@ namespace unity {
 
                 // 计算距离平方
                 std::vector<float> distances(numEvents);
-                cblas_sgemv(CblasRowMajor, CblasNoTrans, numEvents, numDimensions, -2.0f,
-                    coordinates.data(), numDimensions, &this->x, 1, 0.0f, distances.data(), 1);
-                for (auto& distance : distances) {
+                cblas_sgemv(CblasRowMajor,
+                            CblasNoTrans,
+                            numEvents,
+                            numDimensions,
+                            -2.0f,
+                            coordinates.data(),
+                            numDimensions,
+                            &this->x,
+                            1,
+                            0.0f,
+                            distances.data(),
+                            1);
+                for (auto& distance : distances)
                     distance = std::sqrt(distance);
-                }
 
                 return distances;
             }
         };
 
-        struct Vector4
-        {
+        struct Vector4 {
             float x, y, z, w;
 
             Vector4() { x = y = z = w = 0.f; }
-            Vector4(float f1, float f2, float f3, float f4) { x = f1; y = f2; z = f3; w = f4; }
+
+            Vector4(float f1, float f2, float f3, float f4) {
+                x = f1;
+                y = f2;
+                z = f3;
+                w = f4;
+            }
         };
 
-        struct Quaternion
-        {
+        struct Quaternion {
             float x, y, z, w;
 
             Quaternion() { x = y = z = w = 0.f; }
-            Quaternion(float f1, float f2, float f3, float f4) { x = f1; y = f2; z = f3; w = f4; }
 
-            Quaternion Euler(float m_fX, float m_fY, float m_fZ)
-            {
+            Quaternion(float f1, float f2, float f3, float f4) {
+                x = f1;
+                y = f2;
+                z = f3;
+                w = f4;
+            }
+
+            auto Euler(float m_fX, float m_fY, float m_fZ) -> Quaternion {
                 constexpr float m_fDeg2Rad = 3.1415926 / 180.f;
 
                 m_fX = m_fX * m_fDeg2Rad * 0.5f;
@@ -175,31 +204,25 @@ namespace unity {
                 return *this;
             }
 
-            Quaternion Euler(Vector3 m_vRot)
-            {
-                return Euler(m_vRot.x, m_vRot.y, m_vRot.z);
-            }
+            auto Euler(Vector3 m_vRot) -> Quaternion { return Euler(m_vRot.x, m_vRot.y, m_vRot.z); }
 
-            Vector3 ToEuler() const {
+            auto ToEuler() const -> Vector3 {
                 Vector3 m_vEuler;
 
                 const float m_fDist = (x * x) + (y * y) + (z * z) + (w * w);
 
                 const float m_fTest = x * w - y * z;
-                if (m_fTest > 0.4995f * m_fDist)
-                {
+                if (m_fTest > 0.4995f * m_fDist) {
                     m_vEuler.x = 3.1415926 * 0.5f;
                     m_vEuler.y = 2.f * atan2f(y, x);
                     m_vEuler.z = 0.f;
                 }
-                else if (m_fTest < -0.4995f * m_fDist)
-                {
+                else if (m_fTest < -0.4995f * m_fDist) {
                     m_vEuler.x = 3.1415926 * -0.5f;
                     m_vEuler.y = -2.f * atan2f(y, x);
                     m_vEuler.z = 0.f;
                 }
-                else
-                {
+                else {
                     m_vEuler.x = asinf(2.f * (w * x - y * z));
                     m_vEuler.y = atan2f(2.f * w * y + 2.f * z * x, 1.f - 2.f * (x * x + y * y));
                     m_vEuler.z = atan2f(2.f * w * z + 2.f * x * y, 1.f - 2.f * (z * z + x * x));
@@ -221,7 +244,7 @@ namespace unity {
 
         struct Plane {
             Vector3 m_vNormal;
-            float fDistance;
+            float   fDistance;
         };
 
         struct Ray {
@@ -230,38 +253,55 @@ namespace unity {
         };
 
         struct Rect {
-            float fX, fY;
+            float fX,     fY;
             float fWidth, fHeight;
 
             Rect() { fX = fY = fWidth = fHeight = 0.f; }
-            Rect(float f1, float f2, float f3, float f4) { fX = f1; fY = f2; fWidth = f3; fHeight = f4; }
+
+            Rect(float f1, float f2, float f3, float f4) {
+                fX      = f1;
+                fY      = f2;
+                fWidth  = f3;
+                fHeight = f4;
+            }
         };
 
         struct Color {
             float r, g, b, a;
 
             Color() { r = g = b = a = 0.f; }
-            Color(float fRed = 0.f, float fGreen = 0.f, float fBlue = 0.f, float fAlpha = 1.f) { r = fRed; g = fGreen; b = fBlue; a = fAlpha; }
+
+            Color(float fRed = 0.f, float fGreen = 0.f, float fBlue = 0.f, float fAlpha = 1.f) {
+                r = fRed;
+                g = fGreen;
+                b = fBlue;
+                a = fAlpha;
+            }
         };
 
         struct Matrix4x4 {
-            float m[4][4] = { 0 };
+            float m[4][4] = {0};
 
             Matrix4x4() { }
 
-            float* operator[](int i) { return m[i]; }
+            auto operator[](int i) -> float* { return m[i]; }
         };
 
         struct Object {
+        protected:
             union {
-                struct Class* klass;
+                struct Class*  klass{nullptr};
                 struct VTable* vtable;
             };
-            struct MonitorData* monitor;
+            struct MonitorData* monitor{nullptr};
+        public:
+            auto GetClass() const -> Class* {
+                return this->klass;
+            }
         };
 
         struct String : Object {
-        private:
+        protected:
             int32_t m_stringLength{ 0 };
             wchar_t m_firstChar{0};
         public:
@@ -279,7 +319,7 @@ namespace unity {
 
         template<typename T>
         struct Array : Object {
-        private:
+        protected:
             struct {
                 size_t length;
                 size_t lower_bound;
@@ -297,7 +337,7 @@ namespace unity {
                 }
             }
 
-            T& operator[](size_t i) {
+            auto operator[](size_t i) -> T& {
                 return this->vector[i];
             }
         };
