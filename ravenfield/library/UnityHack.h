@@ -417,31 +417,42 @@ namespace unity {
             CSharper::SetMap(address_);
         }
 
-        static void Dump(const std::string& file) {
-            std::ofstream io(file + "\\dump.cs");
+        static auto Dump(const std::string& file) -> void {
+            std::ofstream     io(file + "\\dump.cs");
             std::stringstream ss;
 
             std::vector<Assembly*> assemblys;
             Assembly::EnumAssemblys(assemblys);
             for (const auto& assembly : assemblys) {
+                if (assembly == nullptr)
+                    continue;
 
                 const auto image_ = assembly->GetImage();
+
+                if (image_ == nullptr)
+                    continue;
 
                 // 枚举类
                 std::vector<Class*> classes;
                 image_->EnumClasses(classes);
                 for (const auto& klass : classes) {
+                    if (klass == nullptr)
+                        continue;
 
-                    ss << "// assembly | " << assembly->GetName() << "\n"
-                        << "namespace " << klass->GetNamespace() << " {\n"
-                        << "\tclass " << klass->GetName() << (klass->GetParent() != nullptr ? " : " + klass->GetParent()->GetName() : "") << " {\n";
+                    ss << "// assembly | " << assembly->GetName() << "\n" << "namespace " << klass->GetNamespace() <<
+                        " {\n" << "\tclass " << klass->GetName() << (klass->GetParent() != nullptr
+                                                                         ? " : " + klass->GetParent()->GetName()
+                                                                         : "") << " {\n";
 
                     // 枚举成员
                     std::vector<Field*> fields;
                     klass->EnumFields(fields);
                     for (const auto& field : fields) {
-                        ss << "\t\t" << (field->IsStatic() ? "static " : "") << field->GetType()->GetName() << " " << field->GetName()
-                            << " // " << std::hex << field->GetOffset() << "\n";
+                        if (field == nullptr)
+                            continue;
+
+                        ss << "\t\t" << (field->IsStatic() ? "static " : "") << field->GetType()->GetName() << " " <<
+                            field->GetName() << " // " << std::hex << field->GetOffset() << "\n";
                     }
 
                     ss << "\n\n\n";
@@ -450,14 +461,17 @@ namespace unity {
                     std::vector<Method*> methods;
                     klass->EnumMethods(methods);
                     for (const auto& method : methods) {
-                        ss << "\t\t" << (method->IsStatic() ? "static " : "") << method->GetRetType()->GetName() << method->GetName() << "(";
+                        if (method == nullptr)
+                            continue;
 
-                        // 枚举参数
+                        ss << "\t\t" << (method->IsStatic() ? "static " : "") << method->GetRetType()->GetName() <<
+                            method->GetName() << "(";
+
+                        /*// 枚举参数
                         std::map<std::string, Type*> params;
                         method->EnumParam(params);
-                        for (const auto& [name, type] : params) {
-                            ss << type->GetName() << " " << name << ",";
-                        }
+                        for (const auto& [name, type] : params)
+                            ss << type->GetName() << " " << name << ",";*/
                         ss.seekp(-1, std::ios_base::end); // 去掉最后一个逗号
                         ss << ")\n\t}\n}\n";
                     }
@@ -568,7 +582,15 @@ namespace unity {
             }
 
             auto GetClassFromName(const std::string& name, const std::string& name_space = "") -> Class* {
-                return static_cast<Class * (*)(Image * _this, const char* name_space, const char* name)>(address_["mono_class_from_name"])(this, name_space.c_str(), name.c_str());
+                std::vector<Class*> classes;
+                this->EnumClasses(classes);
+                for (const auto& klass : classes) {
+                    if (klass == nullptr ? true : (klass->GetName() != name || (name_space == "" ? false : klass->GetNamespace() != name_space)))
+                        continue;
+                    return klass;
+
+                }
+                return nullptr;
             }
         };
 
@@ -624,13 +646,9 @@ namespace unity {
                 std::vector<Assembly*> assemblys;
                 Assembly::EnumAssemblys(assemblys);
                 for (const auto& assembly : assemblys) {
-
-                    const auto klass = assembly->GetImage()->GetClassFromName(class_name);
-
-                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze : false)
-                        continue;
-
-                    return klass;
+                    const auto klass = assembly->GetImage()->GetClassFromName(class_name, namespaze);
+                    if (klass)
+                        return klass;
                 }
                 return nullptr;
             }
@@ -767,18 +785,12 @@ namespace unity {
             }
 
             static auto GetAddress(const std::string& class_name, const std::string& method_name, const size_t param_count = -1, const std::string& namespaze = "") -> std::uintptr_t {
-                std::vector<Assembly*> assemblys;
-                Assembly::EnumAssemblys(assemblys);
-                for (const auto& assembly : assemblys) {
+                const auto klass = Class::GetClassFromName(class_name, namespaze);
 
-                    const auto klass = assembly->GetImage()->GetClassFromName(class_name);
+                if (klass == nullptr)
+                    return 0;
 
-                    if (klass == nullptr ? true : (klass->GetName() != class_name || namespaze == "" ? false : klass->GetNamespace() != namespaze))
-                        continue;
-
-                    return klass->GetMethodFromName(method_name, param_count)->GetAddress();
-                }
-                return 0;
+                return klass->GetMethodFromName(method_name, param_count)->GetAddress();
             }
         };
 
@@ -2281,7 +2293,7 @@ namespace unity {
 
                     const auto klass = assembly->GetImage()->GetClassFromName(class_name);
 
-                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze : false)
+                    if (klass == nullptr ? true : (klass->GetName() != class_name || (namespaze == "" ? false : klass->GetNamespace() != namespaze)))
                         continue;
 
                     return klass;
@@ -2412,18 +2424,12 @@ namespace unity {
             }
 
             static auto GetAddress(const std::string& class_name, const std::string& method_name, const size_t param_count = -1, const std::string& namespaze = "") -> std::uintptr_t {
-                std::vector<Assembly*> assemblys;
-                Assembly::EnumAssemblys(assemblys);
-                for (const auto& assembly : assemblys) {
+                const auto klass = Class::GetClassFromName(class_name);
 
-                    const auto klass = assembly->GetImage()->GetClassFromName(class_name);
+                if (klass == nullptr)
+                    return 0;
 
-                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze : false)
-                        continue;
-
-                    return klass->GetMethodFromName(method_name, param_count)->GetAddress();
-                }
-                return 0;
+                return klass->GetMethodFromName(method_name, param_count)->GetAddress();
             }
         };
     private:
@@ -2688,14 +2694,14 @@ namespace unity {
             methodAddress_["Camera.set_depth"] = Il2cpp::Method::GetAddress("Camera", "set_depth", 1);
         }
         else {
-            methodAddress_["Camera.WorldToScreenPoint"] = Mono::Method::GetAddress("UnityEngine.Camera", "WorldToScreenPoint", 1);
-            methodAddress_["Camera.ScreenToWorldPoint"] = Mono::Method::GetAddress("UnityEngine.Camera", "ScreenToWorldPoint", 1);
-            methodAddress_["Camera.get_main"] = Mono::Method::GetAddress("UnityEngine.Camera", "get_main", 0);
-            methodAddress_["Camera.get_current"] = Mono::Method::GetAddress("UnityEngine.Camera", "get_current", 0);
-            methodAddress_["Camera.get_allCamerasCount"] = Mono::Method::GetAddress("UnityEngine.Camera", "get_allCamerasCount", 0);
-            methodAddress_["Camera.get_allCameras"] = Mono::Method::GetAddress("UnityEngine.Camera", "get_allCameras", 0);
-            methodAddress_["Camera.get_depth"] = Mono::Method::GetAddress("UnityEngine.Camera", "get_depth", 0);
-            methodAddress_["Camera.set_depth"] = Mono::Method::GetAddress("UnityEngine.Camera", "set_depth", 1);
+            methodAddress_["Camera.WorldToScreenPoint"] = Mono::Method::GetAddress("Camera", "WorldToScreenPoint");
+            methodAddress_["Camera.ScreenToWorldPoint"] = Mono::Method::GetAddress("Camera", "ScreenToWorldPoint");
+            methodAddress_["Camera.get_main"] = Mono::Method::GetAddress("Camera", "get_main");
+            methodAddress_["Camera.get_current"] = Mono::Method::GetAddress("Camera", "get_current");
+            methodAddress_["Camera.get_allCamerasCount"] = Mono::Method::GetAddress("Camera", "get_allCamerasCount");
+            methodAddress_["Camera.get_allCameras"] = Mono::Method::GetAddress("Camera", "get_allCameras");
+            methodAddress_["Camera.get_depth"] = Mono::Method::GetAddress("Camera", "get_depth");
+            methodAddress_["Camera.set_depth"] = Mono::Method::GetAddress("Camera", "set_depth");
 
             for (const auto& [name, address] : methodAddress_) {
                 std::cout << name << ">>" << std::hex << static_cast<INT64>(address) << std::endl;
