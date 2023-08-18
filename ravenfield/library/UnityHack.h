@@ -342,6 +342,7 @@ namespace unity {
             }
         };
 
+
         static auto SetIL2cppMod() -> void {
             il2cpp = true;
         }
@@ -576,12 +577,27 @@ namespace unity {
                 return methods.size();
             }
 
-            auto GetMethodFromName(const std::string& name) -> Method* {
-                return static_cast<Method*(*)(Class* _this, const char* name, int param_count)>(address_["mono_class_get_method_from_name"])(this, name.c_str(), -1);
+            auto GetMethodFromName(const std::string& name, size_t param_count = -1) -> Method* {
+                return static_cast<Method*(*)(Class* _this, const char* name, int param_count)>(address_["mono_class_get_method_from_name"])(this, name.c_str(), param_count);
             }
 
             auto GetType() -> Type* {
                 return static_cast<Type*(*)(Class* _this)>(address_["mono_class_get_type"])(this);
+            }
+
+            static auto GetClassFromName(const std::string& class_name, const std::string& namespaze = "") -> Class* {
+                std::vector<Assembly*> assemblys;
+                Assembly::EnumAssemblys(assemblys);
+                for (const auto& assembly : assemblys) {
+
+                    const auto klass = assembly->GetImage()->GetClassFromName(class_name);
+
+                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze :  false)
+                        continue;
+
+                    return klass;
+                }
+                return nullptr;
             }
         };
 
@@ -715,17 +731,17 @@ namespace unity {
                 return reinterpret_cast<std::uintptr_t>(static_cast<void*(*)(Method* _this)>(address_["mono_compile_method"])(this));
             }
 
-            static auto GetAddress(const std::string& class_name, std::string method_name, const std::string& namespaze = "") -> std::uintptr_t {
+            static auto GetAddress(const std::string& class_name, const std::string& method_name, const size_t param_count = -1, const std::string& namespaze = "") -> std::uintptr_t {
                 std::vector<Assembly*> assemblys;
                 Assembly::EnumAssemblys(assemblys);
                 for (const auto& assembly : assemblys) {
 
                     const auto klass = assembly->GetImage()->GetClassFromName(class_name);
 
-                    if (klass == nullptr || klass->GetName() != class_name || klass->GetNamespace() != namespaze)
+                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze : false)
                         continue;
 
-                    return klass->GetMethodFromName(method_name)->GetAddress();
+                    return klass->GetMethodFromName(method_name, param_count)->GetAddress();
                 }
                 return 0;
             }
@@ -2219,8 +2235,23 @@ namespace unity {
                 return methods.size();
             }
 
-            auto GetMethodFromName(const std::string& name) -> Method* {
-                return static_cast<Method * (*)(Class * _this, const char* name, int param_count)>(address_["il2cpp_class_get_method_from_name"])(this, name.c_str(), -1);
+            auto GetMethodFromName(const std::string& name, size_t param_count = -1) -> Method* {
+                return static_cast<Method * (*)(Class * _this, const char* name, int param_count)>(address_["il2cpp_class_get_method_from_name"])(this, name.c_str(), param_count);
+            }
+
+            static auto GetClassFromName(const std::string& class_name, const std::string& namespaze = "") -> Class* {
+                std::vector<Assembly*> assemblys;
+                Assembly::EnumAssemblys(assemblys);
+                for (const auto& assembly : assemblys) {
+
+                    const auto klass = assembly->GetImage()->GetClassFromName(class_name);
+
+                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze : false)
+                        continue;
+
+                    return klass;
+                }
+                return nullptr;
             }
         };
 
@@ -2336,21 +2367,26 @@ namespace unity {
                 return this->flags & 0x10;
             }
 
+            template<typename OBJ>
+            auto Invoke(OBJ* obj, void** params) -> struct Object* {
+                return static_cast<Object * (*)(Method * _this, void* obj, void** params, Object * *exc)>(address_["il2cpp_runtime_invoke"])(this, obj, params, nullptr);
+            }
+
             auto GetAddress() -> std::uintptr_t {
                 return reinterpret_cast<std::uintptr_t>(this->methodPointer);
             }
 
-            static auto GetAddress(const std::string& class_name, std::string method_name, const std::string& namespaze = "") -> std::uintptr_t {
+            static auto GetAddress(const std::string& class_name, const std::string& method_name, const size_t param_count = -1, const std::string& namespaze = "") -> std::uintptr_t {
                 std::vector<Assembly*> assemblys;
                 Assembly::EnumAssemblys(assemblys);
                 for (const auto& assembly : assemblys) {
 
                     const auto klass = assembly->GetImage()->GetClassFromName(class_name);
 
-                    if (klass == nullptr || klass->GetName() != class_name || klass->GetNamespace() != namespaze)
+                    if (klass == nullptr || klass->GetName() != class_name || namespaze != "" ? klass->GetNamespace() != namespaze : false)
                         continue;
 
-                    return klass->GetMethodFromName(method_name)->GetAddress();
+                    return klass->GetMethodFromName(method_name, param_count)->GetAddress();
                 }
                 return 0;
             }
