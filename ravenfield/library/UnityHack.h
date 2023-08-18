@@ -361,20 +361,20 @@ namespace unity {
                 return reinterpret_cast<void(*)(Camera*, float)>(methodAddress_["Camera.set_depth"])(this, value);
             }
 
-            static Camera* GetMain() {
-                return reinterpret_cast<Camera*(*)()>(methodAddress_["Camera.get_main"])();
+            Camera* GetMain() {
+                return reinterpret_cast<Camera*(*)(Camera*)>(methodAddress_["Camera.get_main"])(this);
             }
 
-            static Camera* GetCurrent() {
-                return reinterpret_cast<Camera * (*)()>(methodAddress_["Camera.get_current"])();
+            Camera* GetCurrent() {
+                return reinterpret_cast<Camera * (*)(Camera*)>(methodAddress_["Camera.get_current"])(this);
             }
 
-            static size_t GetCameraCount() {
-                return reinterpret_cast<size_t(*)()>(methodAddress_["Camera.get_allCamerasCount"])();
+            size_t GetCameraCount() {
+                return reinterpret_cast<size_t(*)(Camera*)>(methodAddress_["Camera.get_allCamerasCount"])(this);
             }
 
-            static Array<Camera>& GetAllCamera() {
-                return reinterpret_cast<Array<Camera>&(*)()>(methodAddress_["Camera.get_allCameras"])();
+            Array<Camera>& GetAllCamera() {
+                return reinterpret_cast<Array<Camera>&(*)(Camera*)>(methodAddress_["Camera.get_allCameras"])(this);
             }
         };
 
@@ -2694,18 +2694,14 @@ namespace unity {
             methodAddress_["Camera.set_depth"] = Il2cpp::Method::GetAddress("Camera", "set_depth", 1);
         }
         else {
-            methodAddress_["Camera.WorldToScreenPoint"] = Mono::Method::GetAddress("Camera", "WorldToScreenPoint");
-            methodAddress_["Camera.ScreenToWorldPoint"] = Mono::Method::GetAddress("Camera", "ScreenToWorldPoint");
-            methodAddress_["Camera.get_main"] = Mono::Method::GetAddress("Camera", "get_main");
-            methodAddress_["Camera.get_current"] = Mono::Method::GetAddress("Camera", "get_current");
-            methodAddress_["Camera.get_allCamerasCount"] = Mono::Method::GetAddress("Camera", "get_allCamerasCount");
-            methodAddress_["Camera.get_allCameras"] = Mono::Method::GetAddress("Camera", "get_allCameras");
-            methodAddress_["Camera.get_depth"] = Mono::Method::GetAddress("Camera", "get_depth");
-            methodAddress_["Camera.set_depth"] = Mono::Method::GetAddress("Camera", "set_depth");
-
-            for (const auto& [name, address] : methodAddress_) {
-                std::cout << name << ">>" << std::hex << static_cast<INT64>(address) << std::endl;
-            }
+            methodAddress_["Camera.WorldToScreenPoint"] = Mono::Method::GetAddress("Camera", "WorldToScreenPoint", 1);
+            methodAddress_["Camera.ScreenToWorldPoint"] = Mono::Method::GetAddress("Camera", "ScreenToWorldPoint", 1);
+            methodAddress_["Camera.get_main"] = Mono::Method::GetAddress("Camera", "get_main", 0);
+            methodAddress_["Camera.get_current"] = Mono::Method::GetAddress("Camera", "get_current", 0);
+            methodAddress_["Camera.get_allCamerasCount"] = Mono::Method::GetAddress("Camera", "get_allCamerasCount", 0);
+            methodAddress_["Camera.get_allCameras"] = Mono::Method::GetAddress("Camera", "get_allCameras", 0);
+            methodAddress_["Camera.get_depth"] = Mono::Method::GetAddress("Camera", "get_depth", 0);
+            methodAddress_["Camera.set_depth"] = Mono::Method::GetAddress("Camera", "set_depth", 1);
         }
     }
 }

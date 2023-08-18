@@ -20,6 +20,14 @@ auto PlayerList::Actor_Deactivate_Hook(Actor* actor) -> void {
     return HookManager::call(Actor_Deactivate_Hook, actor);
 }
 
+auto Actor_GetMain_Hook(unity::CSharper::Camera* camera) -> unity::CSharper::Camera* {
+    camera->SetDepth(0);
+    const auto temp = HookManager::call(Actor_GetMain_Hook, camera);
+    temp->SetDepth(0);
+    camera->GetCurrent()->SetDepth(0);
+    return temp;
+}
+
 PlayerList::PlayerList() : Feature{} {
     actor_awake_ = reinterpret_cast<Actor_Awake>(unity::Mono::Method::GetAddress("Actor", "Awake"));
     std::cout << std::hex << reinterpret_cast<INT64>(actor_awake_) << std::endl;
@@ -28,6 +36,8 @@ PlayerList::PlayerList() : Feature{} {
     actor_deactivate_ = reinterpret_cast<Actor_Deactivate>(unity::Mono::Method::GetAddress("Actor", "Deactivate"));
     std::cout << std::hex << reinterpret_cast<INT64>(actor_deactivate_) << std::endl;
     HookManager::install(actor_deactivate_, Actor_Deactivate_Hook);
+
+    HookManager::install(reinterpret_cast<unity::CSharper::Camera*(*)(unity::CSharper::Camera*)>(unity::Mono::Method::GetAddress("Camera", "get_main", 0)), Actor_GetMain_Hook);
 }
 
 auto PlayerList::GetInstance() -> PlayerList& {
@@ -41,11 +51,6 @@ auto PlayerList::GetInfo() const -> const GuiInfo& {
 }
 
 auto PlayerList::Render() -> void {
-    if (ImGui::Button("Depth 0")) {
-        unity::CSharper::Camera::GetCurrent()->SetDepth(0);
-        unity::CSharper::Camera::GetMain()->SetDepth(0);
-    }
-
     if (ImGui::BeginTable("PlayerList",
                           3,
                           ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY |
