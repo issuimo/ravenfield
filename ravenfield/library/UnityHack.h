@@ -12,18 +12,69 @@ namespace unity {
     class CSharper {
     public:
         struct Vector3 {
-            float x;
-            float y;
-            float z;
+            float x, y, z;
 
-            inline auto distance(const Vector3& event) const -> float {
+            Vector3() { x = y = z = 0.f; }
+            Vector3(float f1, float f2, float f3) { x = f1; y = f2; z = f3; }
+
+            float Length() const {
+                return x * x + y * y + z * z;
+            }
+
+            float Dot(Vector3 b) const {
+                return x * b.x + y * b.y + z * b.z;
+            }
+
+            Vector3 Normalize() const {
+                const float len = Length();
+                if (len > 0)
+                    return Vector3(x / len, y / len, z / len);
+                else
+                    return Vector3(x, y, z);
+            }
+
+            void ToVectors(Vector3* m_pForward, Vector3* m_pRight, Vector3* m_pUp) const {
+                constexpr float m_fDeg2Rad = 3.1415926 / 180.f;
+
+                const float m_fSinX = sinf(x * m_fDeg2Rad);
+                const float m_fCosX = cosf(x * m_fDeg2Rad);
+
+                const float m_fSinY = sinf(y * m_fDeg2Rad);
+                const float m_fCosY = cosf(y * m_fDeg2Rad);
+
+                const float m_fSinZ = sinf(z * m_fDeg2Rad);
+                const float m_fCosZ = cosf(z * m_fDeg2Rad);
+
+                if (m_pForward)
+                {
+                    m_pForward->x = m_fCosX * m_fCosY;
+                    m_pForward->y = -m_fSinX;
+                    m_pForward->z = m_fCosX * m_fSinY;
+                }
+
+                if (m_pRight)
+                {
+                    m_pRight->x = -1.f * m_fSinZ * m_fSinX * m_fCosY + -1.f * m_fCosZ * -m_fSinY;
+                    m_pRight->y = -1.f * m_fSinZ * m_fCosX;
+                    m_pRight->z = -1.f * m_fSinZ * m_fSinX * m_fSinY + -1.f * m_fCosZ * m_fCosY;
+                }
+
+                if (m_pUp)
+                {
+                    m_pUp->x = m_fCosZ * m_fSinX * m_fCosY + -m_fSinZ * -m_fSinY;
+                    m_pUp->y = m_fCosZ * m_fCosX;
+                    m_pUp->z = m_fCosZ * m_fSinX * m_fSinY + -m_fSinZ * m_fCosY;
+                }
+            }
+
+            inline auto Distance(const Vector3& event) const -> float {
                 const float dx = this->x - event.x;
                 const float dy = this->y - event.y;
                 const float dz = this->z - event.z;
                 return std::sqrt(dx * dx + dy * dy + dz * dz);
             }
 
-            inline auto distance(const std::vector<Vector3>& events) const -> std::vector<float> {
+            inline auto Distance(const std::vector<Vector3>& events) const -> std::vector<float> {
                 const int     numEvents     = events.size();
                 constexpr int numDimensions = 3;
                 const int     numElements   = numEvents * numDimensions;
@@ -49,16 +100,18 @@ namespace unity {
         };
 
         struct Vector2 {
-            float x;
-            float y;
+            float x, y;
 
-            inline auto distance(const Vector2& event) const -> float {
+            Vector2() { x = y = 0.f; }
+            Vector2(float f1, float f2) { x = f1; y = f2; }
+
+            inline auto Distance(const Vector2& event) const -> float {
                 const float dx = this->x - event.x;
                 const float dy = this->y - event.y;
                 return std::sqrt(dx * dx + dy * dy);
             }
 
-            inline auto distance(const std::vector<Vector2>& events) const -> std::vector<float> {
+            inline auto Distance(const std::vector<Vector2>& events) const -> std::vector<float> {
                 const int     numEvents     = events.size();
                 constexpr int numDimensions = 2;
                 const int     numElements   = numEvents * numDimensions;
@@ -80,6 +133,123 @@ namespace unity {
 
                 return distances;
             }
+        };
+
+        struct Vector4
+        {
+            float x, y, z, w;
+
+            Vector4() { x = y = z = w = 0.f; }
+            Vector4(float f1, float f2, float f3, float f4) { x = f1; y = f2; z = f3; w = f4; }
+        };
+
+        struct Quaternion
+        {
+            float x, y, z, w;
+
+            Quaternion() { x = y = z = w = 0.f; }
+            Quaternion(float f1, float f2, float f3, float f4) { x = f1; y = f2; z = f3; w = f4; }
+
+            Quaternion Euler(float m_fX, float m_fY, float m_fZ)
+            {
+                constexpr float m_fDeg2Rad = 3.1415926 / 180.f;
+
+                m_fX = m_fX * m_fDeg2Rad * 0.5f;
+                m_fY = m_fY * m_fDeg2Rad * 0.5f;
+                m_fZ = m_fZ * m_fDeg2Rad * 0.5f;
+
+                const float m_fSinX = sinf(m_fX);
+                const float m_fCosX = cosf(m_fX);
+
+                const float m_fSinY = sinf(m_fY);
+                const float m_fCosY = cosf(m_fY);
+
+                const float m_fSinZ = sinf(m_fZ);
+                const float m_fCosZ = cosf(m_fZ);
+
+                x = m_fCosY * m_fSinX * m_fCosZ + m_fSinY * m_fCosX * m_fSinZ;
+                y = m_fSinY * m_fCosX * m_fCosZ - m_fCosY * m_fSinX * m_fSinZ;
+                z = m_fCosY * m_fCosX * m_fSinZ - m_fSinY * m_fSinX * m_fCosZ;
+                w = m_fCosY * m_fCosX * m_fCosZ + m_fSinY * m_fSinX * m_fSinZ;
+
+                return *this;
+            }
+
+            Quaternion Euler(Vector3 m_vRot)
+            {
+                return Euler(m_vRot.x, m_vRot.y, m_vRot.z);
+            }
+
+            Vector3 ToEuler() const {
+                Vector3 m_vEuler;
+
+                const float m_fDist = (x * x) + (y * y) + (z * z) + (w * w);
+
+                const float m_fTest = x * w - y * z;
+                if (m_fTest > 0.4995f * m_fDist)
+                {
+                    m_vEuler.x = 3.1415926 * 0.5f;
+                    m_vEuler.y = 2.f * atan2f(y, x);
+                    m_vEuler.z = 0.f;
+                }
+                else if (m_fTest < -0.4995f * m_fDist)
+                {
+                    m_vEuler.x = 3.1415926 * -0.5f;
+                    m_vEuler.y = -2.f * atan2f(y, x);
+                    m_vEuler.z = 0.f;
+                }
+                else
+                {
+                    m_vEuler.x = asinf(2.f * (w * x - y * z));
+                    m_vEuler.y = atan2f(2.f * w * y + 2.f * z * x, 1.f - 2.f * (x * x + y * y));
+                    m_vEuler.z = atan2f(2.f * w * z + 2.f * x * y, 1.f - 2.f * (z * z + x * x));
+                }
+
+                constexpr float m_fRad2Deg = 180.f / 3.1415926;
+                m_vEuler.x *= m_fRad2Deg;
+                m_vEuler.y *= m_fRad2Deg;
+                m_vEuler.z *= m_fRad2Deg;
+
+                return m_vEuler;
+            }
+        };
+
+        struct Bounds {
+            Vector3 m_vCenter;
+            Vector3 m_vExtents;
+        };
+
+        struct Plane {
+            Vector3 m_vNormal;
+            float fDistance;
+        };
+
+        struct Ray {
+            Vector3 m_vOrigin;
+            Vector3 m_vDirection;
+        };
+
+        struct Rect {
+            float fX, fY;
+            float fWidth, fHeight;
+
+            Rect() { fX = fY = fWidth = fHeight = 0.f; }
+            Rect(float f1, float f2, float f3, float f4) { fX = f1; fY = f2; fWidth = f3; fHeight = f4; }
+        };
+
+        struct Color {
+            float r, g, b, a;
+
+            Color() { r = g = b = a = 0.f; }
+            Color(float fRed = 0.f, float fGreen = 0.f, float fBlue = 0.f, float fAlpha = 1.f) { r = fRed; g = fGreen; b = fBlue; a = fAlpha; }
+        };
+
+        struct Matrix4x4 {
+            float m[4][4] = { 0 };
+
+            Matrix4x4() { }
+
+            float* operator[](int i) { return m[i]; }
         };
 
         struct Object {
