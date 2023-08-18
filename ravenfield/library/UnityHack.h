@@ -361,20 +361,20 @@ namespace unity {
                 return reinterpret_cast<void(*)(Camera*, float)>(methodAddress_["Camera.set_depth"])(this, value);
             }
 
-            Camera* GetMain() {
-                return reinterpret_cast<Camera*(*)(Camera*)>(methodAddress_["Camera.get_main"])(this);
+            static Camera* GetMain() {
+                return reinterpret_cast<Camera*(*)()>(methodAddress_["Camera.get_main"])();
             }
 
-            Camera* GetCurrent() {
-                return reinterpret_cast<Camera * (*)(Camera*)>(methodAddress_["Camera.get_current"])(this);
+            static Camera* GetCurrent() {
+                return reinterpret_cast<Camera * (*)()>(methodAddress_["Camera.get_current"])();
             }
 
-            size_t GetCameraCount() {
-                return reinterpret_cast<size_t(*)(Camera*)>(methodAddress_["Camera.get_allCamerasCount"])(this);
+            static size_t GetCameraCount() {
+                return reinterpret_cast<size_t(*)()>(methodAddress_["Camera.get_allCamerasCount"])();
             }
 
-            Array<Camera>& GetAllCamera() {
-                return reinterpret_cast<Array<Camera>&(*)(Camera*)>(methodAddress_["Camera.get_allCameras"])(this);
+            static Array<Camera>& GetAllCamera() {
+                return reinterpret_cast<Array<Camera>&(*)()>(methodAddress_["Camera.get_allCameras"])();
             }
         };
 
