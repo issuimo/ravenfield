@@ -41,6 +41,11 @@ auto PlayerList::GetInfo() const -> const GuiInfo& {
 }
 
 auto PlayerList::Render() -> void {
+    if (ImGui::Button("Depth 0")) {
+        unity::CSharper::Camera::GetCurrent()->SetDepth(0);
+        unity::CSharper::Camera::GetMain()->SetDepth(0);
+    }
+
     if (ImGui::BeginTable("PlayerList",
                           3,
                           ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY |
